@@ -4,6 +4,11 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+dependencies:
+  '@stricli/core':
+    specifier: ^1.2.0
+    version: 1.2.0
+
 devDependencies:
   '@eslint/js':
     specifier: ^9.33.0
@@ -207,6 +212,10 @@ packages:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.19.1
     dev: true
+
+  /@stricli/core@1.2.0:
+    resolution: {integrity: sha512-5b+npntDY0TAB7wAw0daGlh3/R2sf0TDLyrB1By2jCNH+C+lmcSqMtJXOMLVtEGSkIOvqAgIWpLMSs1PXqzt3w==}
+    dev: false
 
   /@stylistic/eslint-plugin@4.4.1(eslint@9.33.0)(typescript@5.9.2):
     resolution: {integrity: sha512-CEigAk7eOLyHvdgmpZsKFwtiqS2wFwI1fn4j09IU9GmD4euFM4jEBAViWeCqaNLlbX2k2+A/Fq9cje4HQBXuJQ==}

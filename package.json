@@ -22,5 +22,8 @@
         "prettier": "3.6.2",
         "typescript": "^5.9.2",
         "typescript-eslint": "^8.39.1"
+    },
+    "dependencies": {
+        "@stricli/core": "^1.2.0"
     }
 }
