@@ -2,7 +2,8 @@
     "name": "WorkTracker",
     "version": "1.0.0",
     "description": "",
-    "main": "index.js",
+    "main": "dist/index.js",
+    "type": "module",
     "scripts": {
         "build": "tsc",
         "format:check": "prettier --check .",
@@ -20,10 +21,12 @@
         "globals": "^16.3.0",
         "jiti": "^2.5.1",
         "prettier": "3.6.2",
+        "tsc-alias": "^1.8.16",
         "typescript": "^5.9.2",
         "typescript-eslint": "^8.39.1"
     },
     "dependencies": {
-        "@stricli/core": "^1.2.0"
+        "@stricli/core": "^1.2.0",
+        "@types/node": "^24.3.0"
     }
 }
