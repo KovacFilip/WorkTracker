@@ -6,7 +6,9 @@ import { getTaskStartingWithStringHelper } from "./helpers/getTaskStartingWithSt
 import { optionallyAddDescription } from "./helpers/optionallyAddDescription.js";
 
 const CREATE_TASK = "Create a new task";
+const DELETE_TASK = "Delete task";
 const VIEW_LOGS_ON_TASK = "View all logs for task";
+const VIEW_ALL_TASKS = "View all tasks";
 
 const taskService = new TaskService();
 const workLogService = new WorkLogService();
@@ -21,7 +23,7 @@ export const taskCommand = buildCommand({
 
 async function taskCommands(this: CommandContext, options: {}) {
     const selectedCommand = await select({
-        choices: [CREATE_TASK, VIEW_LOGS_ON_TASK],
+        choices: [CREATE_TASK, DELETE_TASK, VIEW_ALL_TASKS, VIEW_LOGS_ON_TASK],
         message: "Select the operation:",
     });
 
@@ -29,8 +31,14 @@ async function taskCommands(this: CommandContext, options: {}) {
         case CREATE_TASK:
             await createTask();
             break;
+        case DELETE_TASK:
+            await deleteTask();
+            break;
         case VIEW_LOGS_ON_TASK:
             await viewLogsPerTask();
+            break;
+        case VIEW_ALL_TASKS:
+            viewAllTasks();
             break;
         default:
             break;
@@ -68,6 +76,24 @@ async function viewLogsPerTask() {
             End: log.end ? log.end.toLocaleString() : "-",
             Description: log.description ?? "-",
             Hours: log.hours ?? "-",
+        })),
+    );
+}
+
+async function deleteTask() {
+    const task = (await getTaskStartingWithStringHelper(taskService)).task;
+
+    await taskService.deleteTask({ name: task });
+
+    console.log(`Successfully deleted the task: ${task}`);
+}
+
+async function viewAllTasks() {
+    const tasks = await taskService.getAllTasksStartingWith("");
+
+    console.table(
+        tasks.map((task) => ({
+            Name: task.name,
         })),
     );
 }

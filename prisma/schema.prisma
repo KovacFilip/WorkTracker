@@ -28,7 +28,7 @@ model WorkLog {
 
   // Relation back to Task
   taskId String
-  task   Task @relation(fields: [taskId], references: [id])
+  task   Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
 }
 
 model Note {
@@ -37,5 +37,5 @@ model Note {
 
   // Relation back to Task
   taskId String
-  task   Task @relation(fields: [taskId], references: [id])
+  task   Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
 }

@@ -172,4 +172,15 @@ export class TaskRepository implements ITaskRepository {
 
         return this.getTask(taskIdentifier);
     }
+
+    async deleteTask(
+        taskIdentifier: TaskUniqueIdentifier,
+    ): Promise<TaskEntity> {
+        const deletedTask = await prisma.task.delete({
+            where: taskIdentifier,
+            include: { workLogs: true, notes: true },
+        });
+
+        return mapToEntity(deletedTask);
+    }
 }

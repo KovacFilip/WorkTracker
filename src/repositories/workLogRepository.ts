@@ -1,10 +1,14 @@
 import { PrismaClient } from "@prisma/client";
 import type { IWorkLogRepository } from "../interfaces/repositories/workLogRepository.js";
+import { mapTaskToComplexTaskEntity } from "../mappers/taskModelToTaskEntity.js";
 import {
     mapToComplexEntity,
     mapToEntity,
 } from "../mappers/workLogModelToWorkLogEntity.js";
-import type { TaskUniqueIdentifier } from "../models/task/entities/task.js";
+import type {
+    TaskEntityWithComplexWorkLogs,
+    TaskUniqueIdentifier,
+} from "../models/task/entities/task.js";
 import type {
     CreateWorkLog,
     UpdateWorkLog,
@@ -82,5 +86,35 @@ export class WorkLogRepository implements IWorkLogRepository {
         if (!workLog) throw new Error(`Work log not found`);
 
         return mapToComplexEntity(workLog);
+    }
+
+    async getWorkLogsForDate(
+        date: Date,
+    ): Promise<TaskEntityWithComplexWorkLogs[]> {
+        const startOfDay = new Date(date);
+        startOfDay.setHours(0, 0, 0, 0);
+
+        const endOfDay = new Date(date);
+        endOfDay.setHours(23, 59, 59, 999);
+
+        const tasks = await prisma.task.findMany({
+            where: {},
+            include: {
+                workLogs: {
+                    where: {
+                        start: {
+                            gte: startOfDay,
+                            lte: endOfDay,
+                        },
+                    },
+                    orderBy: {
+                        start: "asc",
+                    },
+                },
+                notes: true,
+            },
+        });
+
+        return tasks.map(mapTaskToComplexTaskEntity);
     }
 }

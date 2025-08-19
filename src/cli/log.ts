@@ -1,5 +1,6 @@
 import { select } from "@inquirer/prompts";
 import { buildCommand } from "@stricli/core";
+import chalk from "chalk";
 import inquirer from "inquirer";
 import { TaskService } from "../services/taskService.js";
 import { WorkLogService } from "../services/workLogService.js";
@@ -10,6 +11,7 @@ import { optionallyAddDescription } from "./helpers/optionallyAddDescription.js"
 const START_WORK = "Start working on a task";
 const STOP_WORK = "Stop working on a task";
 const ADD_COMPLETE_WORK_LOG = "Add a work log to a task";
+const VIEW_ALL_LOGS_FROM_TODAY = "View all today's logs";
 
 const taskService = new TaskService();
 const workLogService = new WorkLogService();
@@ -24,7 +26,12 @@ export const logCommand = buildCommand({
 
 async function logCommands() {
     const selectedCommand = await select({
-        choices: [START_WORK, STOP_WORK, ADD_COMPLETE_WORK_LOG],
+        choices: [
+            START_WORK,
+            STOP_WORK,
+            ADD_COMPLETE_WORK_LOG,
+            VIEW_ALL_LOGS_FROM_TODAY,
+        ],
         message: "Select the operation",
     });
 
@@ -37,6 +44,9 @@ async function logCommands() {
             break;
         case ADD_COMPLETE_WORK_LOG:
             addCompleteWorkLog();
+            break;
+        case VIEW_ALL_LOGS_FROM_TODAY:
+            viewAllLogsFromToday();
             break;
         default:
             break;
@@ -94,4 +104,35 @@ async function addCompleteWorkLog() {
     );
 
     console.log("You added a work log to task: ", selectedTask);
+}
+
+async function viewAllLogsFromToday() {
+    const tasks = await workLogService.getWorkLogsForDate(new Date());
+
+    const logs: {
+        Task: string;
+        Start: string;
+        End?: string;
+        WorkDescription?: string;
+        Hours?: number;
+    }[] = [];
+
+    let totalHours = 0;
+
+    tasks.map((task) => {
+        task.workLogs.map((log) => {
+            logs.push({
+                Task: task.name,
+                Start: log.start.toLocaleString(),
+                End: log.end ? log.end.toLocaleString() : "-",
+                WorkDescription: log.description ? log.description : "-",
+                Hours: log.hours ? log.hours : 0,
+            });
+
+            totalHours += log.hours ? log.hours : 0;
+        });
+    });
+
+    console.table(logs);
+    console.log(chalk.bold(`Total hours today: ${chalk.green(totalHours)}`));
 }

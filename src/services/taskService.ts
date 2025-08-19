@@ -54,4 +54,10 @@ export class TaskService implements ITaskService {
     ): Promise<TaskEntity> {
         return await taskRepository.addNoteOnTask(taskIdentifier, note);
     }
+
+    async deleteTask(
+        taskIdentifier: TaskUniqueIdentifier,
+    ): Promise<TaskEntity> {
+        return await taskRepository.deleteTask(taskIdentifier);
+    }
 }

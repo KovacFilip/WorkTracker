@@ -23,4 +23,5 @@ export interface ITaskRepository {
         taskIdentifier: TaskUniqueIdentifier,
         note: string,
     ): Promise<TaskEntity>;
+    deleteTask(taskIdentifier: TaskUniqueIdentifier): Promise<TaskEntity>;
 }

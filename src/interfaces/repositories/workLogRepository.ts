@@ -1,4 +1,7 @@
-import type { TaskUniqueIdentifier } from "../../models/task/entities/task.js";
+import type {
+    TaskEntityWithComplexWorkLogs,
+    TaskUniqueIdentifier,
+} from "../../models/task/entities/task.js";
 import type {
     CreateWorkLog,
     UpdateWorkLog,
@@ -25,4 +28,6 @@ export interface IWorkLogRepository {
     ): Promise<WorkLogEntityComplex[]>;
 
     getWorkLog(workLogId: WorkLogId): Promise<WorkLogEntityComplex>;
+
+    getWorkLogsForDate(date: Date): Promise<TaskEntityWithComplexWorkLogs[]>;
 }

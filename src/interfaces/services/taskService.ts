@@ -20,4 +20,5 @@ export interface ITaskService {
         taskIdentifier: TaskUniqueIdentifier,
         note: string,
     ): Promise<TaskEntity>;
+    deleteTask(taskIdentifier: TaskUniqueIdentifier): Promise<TaskEntity>;
 }

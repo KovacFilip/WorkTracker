@@ -1,5 +1,8 @@
 import type { IWorkLogService } from "../interfaces/services/workLogService.js";
-import type { TaskUniqueIdentifier } from "../models/task/entities/task.js";
+import type {
+    TaskEntityWithComplexWorkLogs,
+    TaskUniqueIdentifier,
+} from "../models/task/entities/task.js";
 import type {
     CreateWorkLog,
     UpdateWorkLog,
@@ -36,5 +39,11 @@ export class WorkLogService implements IWorkLogService {
 
     async getWorkLog(workLogId: WorkLogId): Promise<WorkLogEntityComplex> {
         return await workLogRepository.getWorkLog(workLogId);
+    }
+
+    async getWorkLogsForDate(
+        date: Date,
+    ): Promise<TaskEntityWithComplexWorkLogs[]> {
+        return await workLogRepository.getWorkLogsForDate(date);
     }
 }
