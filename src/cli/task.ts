@@ -1,11 +1,14 @@
 import { input, select } from "@inquirer/prompts";
 import { buildCommand, type CommandContext } from "@stricli/core";
+import type { UpdateTaskEntity } from "../models/task/entities/task.js";
 import { TaskService } from "../services/taskService.js";
 import { WorkLogService } from "../services/workLogService.js";
+import { getOptionalStringValue } from "./helpers/getOptionalStringValue.js";
 import { getTaskStartingWithStringHelper } from "./helpers/getTaskStartingWithStringHelper.js";
 import { optionallyAddDescription } from "./helpers/optionallyAddDescription.js";
 
 const CREATE_TASK = "Create a new task";
+const EDIT_TASK = "Edit task";
 const DELETE_TASK = "Delete task";
 const VIEW_LOGS_ON_TASK = "View all logs for task";
 const VIEW_ALL_TASKS = "View all tasks";
@@ -23,13 +26,22 @@ export const taskCommand = buildCommand({
 
 async function taskCommands(this: CommandContext, options: {}) {
     const selectedCommand = await select({
-        choices: [CREATE_TASK, DELETE_TASK, VIEW_ALL_TASKS, VIEW_LOGS_ON_TASK],
+        choices: [
+            CREATE_TASK,
+            EDIT_TASK,
+            DELETE_TASK,
+            VIEW_ALL_TASKS,
+            VIEW_LOGS_ON_TASK,
+        ],
         message: "Select the operation:",
     });
 
     switch (selectedCommand) {
         case CREATE_TASK:
             await createTask();
+            break;
+        case EDIT_TASK:
+            await editTask();
             break;
         case DELETE_TASK:
             await deleteTask();
@@ -96,4 +108,43 @@ async function viewAllTasks() {
             Name: task.name,
         })),
     );
+}
+
+async function editTask() {
+    const task = (await getTaskStartingWithStringHelper(taskService)).task;
+
+    const currentTaskData = await taskService.getTask({ name: task });
+
+    console.log("Current task values:");
+    console.table([
+        {
+            Name: currentTaskData.name,
+            Description: currentTaskData.description ?? "-",
+        },
+    ]);
+
+    const newData: UpdateTaskEntity = {};
+
+    const newName = await getOptionalStringValue("name", currentTaskData.name);
+    if (newName) {
+        newData.name = newName;
+    }
+
+    const newDescription = await getOptionalStringValue(
+        "description",
+        currentTaskData.description,
+    );
+    if (newDescription) {
+        newData.description = newDescription;
+    }
+
+    const updatedTask = await taskService.editTask({ name: task }, newData);
+
+    console.log(`Task ${task} updated successfully. The new values:`);
+    console.table([
+        {
+            Name: updatedTask.name,
+            Description: updatedTask.description ?? "-",
+        },
+    ]);
 }

@@ -3,7 +3,9 @@ import type {
     CreateTaskEntity,
     TaskEntity,
     TaskSimpleEntity,
+    TaskSimpleEntityWithDescription,
     TaskUniqueIdentifier,
+    UpdateTaskEntity,
 } from "../models/task/entities/task.js";
 import { TaskRepository } from "../repositories/TaskRepository.js";
 
@@ -59,5 +61,12 @@ export class TaskService implements ITaskService {
         taskIdentifier: TaskUniqueIdentifier,
     ): Promise<TaskEntity> {
         return await taskRepository.deleteTask(taskIdentifier);
+    }
+
+    async editTask(
+        taskIdentifier: TaskUniqueIdentifier,
+        data: UpdateTaskEntity,
+    ): Promise<TaskSimpleEntityWithDescription> {
+        return await taskRepository.updateTask(taskIdentifier, data);
     }
 }

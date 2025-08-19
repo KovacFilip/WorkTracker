@@ -24,10 +24,19 @@ export type TaskSimpleEntity = {
     name: string;
 };
 
+export type TaskSimpleEntityWithDescription = TaskSimpleEntity & {
+    description?: string;
+};
+
 export type TaskUniqueIdentifier = { name: string } | { id: TaskId };
 
 export type CreateTaskEntity = {
     name: string;
+    description?: string;
+};
+
+export type UpdateTaskEntity = {
+    name?: string;
     description?: string;
 };
 

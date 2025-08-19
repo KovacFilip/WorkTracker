@@ -5,7 +5,9 @@ import type {
     CreateTaskEntity,
     TaskEntity,
     TaskSimpleEntity,
+    TaskSimpleEntityWithDescription,
     TaskUniqueIdentifier,
+    UpdateTaskEntity,
 } from "../models/task/entities/task.js";
 
 const prisma = new PrismaClient();
@@ -182,5 +184,21 @@ export class TaskRepository implements ITaskRepository {
         });
 
         return mapToEntity(deletedTask);
+    }
+
+    async updateTask(
+        taskIdentifier: TaskUniqueIdentifier,
+        editTaskData: UpdateTaskEntity,
+    ): Promise<TaskSimpleEntityWithDescription> {
+        const updatedTask = await prisma.task.update({
+            where: taskIdentifier,
+            data: editTaskData,
+        });
+
+        return {
+            id: updatedTask.id,
+            name: updatedTask.name,
+            description: updatedTask.description ?? undefined,
+        };
     }
 }
