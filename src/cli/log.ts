@@ -2,15 +2,19 @@ import { select } from "@inquirer/prompts";
 import { buildCommand } from "@stricli/core";
 import chalk from "chalk";
 import inquirer from "inquirer";
+import type { UpdateWorkLog } from "../models/task/entities/workLog.js";
 import { TaskService } from "../services/taskService.js";
 import { WorkLogService } from "../services/workLogService.js";
 import { getDateInput } from "./helpers/getDateInput.js";
+import { getOptionalDateValue } from "./helpers/getOptionalDateValue.js";
+import { getOptionalStringValue } from "./helpers/getOptionalStringValue.js";
 import { getTaskStartingWithStringHelper } from "./helpers/getTaskStartingWithStringHelper.js";
 import { optionallyAddDescription } from "./helpers/optionallyAddDescription.js";
 
 const START_WORK = "Start working on a task";
 const STOP_WORK = "Stop working on a task";
 const ADD_COMPLETE_WORK_LOG = "Add a work log to a task";
+const EDIT_LOG = "Edit a work log";
 const VIEW_ALL_LOGS_FROM_TODAY = "View all today's logs";
 
 const taskService = new TaskService();
@@ -30,6 +34,7 @@ async function logCommands() {
             START_WORK,
             STOP_WORK,
             ADD_COMPLETE_WORK_LOG,
+            EDIT_LOG,
             VIEW_ALL_LOGS_FROM_TODAY,
         ],
         message: "Select the operation",
@@ -47,6 +52,9 @@ async function logCommands() {
             break;
         case VIEW_ALL_LOGS_FROM_TODAY:
             viewAllLogsFromToday();
+            break;
+        case EDIT_LOG:
+            editLog();
             break;
         default:
             break;
@@ -135,4 +143,62 @@ async function viewAllLogsFromToday() {
 
     console.table(logs);
     console.log(chalk.bold(`Total hours today: ${chalk.green(totalHours)}`));
+}
+
+async function editLog() {
+    // First get task
+    const task = (await getTaskStartingWithStringHelper(taskService)).task;
+
+    // Select log on the selected task
+    const taskLogs = await workLogService.getWorkLogsForTask({ name: task });
+    const selectedLog = await select({
+        message: "Select the log you want to update:",
+        choices: taskLogs.map((log) => ({
+            name: `${log.id}: ${log.start.toLocaleString()} - ${log.end ? log.end.toLocaleString() : "-"}, ${log.description ?? "-"}`,
+            value: log,
+        })),
+    });
+
+    // Print current value
+    console.log("The current values: ");
+    console.table([
+        {
+            Start: selectedLog.start.toLocaleString(),
+            End: selectedLog.end ? selectedLog.end.toLocaleString() : "-",
+            Description: selectedLog.description ?? "-",
+        },
+    ]);
+
+    // Update log
+    const newData: UpdateWorkLog = {};
+
+    const newStart = await getOptionalDateValue("Start");
+    if (newStart) {
+        newData.start = new Date(newStart);
+    }
+
+    const newEnd = await getOptionalDateValue("End");
+    if (newEnd) {
+        newData.end = new Date(newEnd);
+    }
+
+    const newDescription = await getOptionalStringValue("Description");
+    if (newDescription) {
+        newData.description = newDescription;
+    }
+
+    const updatedLog = await workLogService.editWorkLog(
+        selectedLog.id,
+        newData,
+    );
+
+    // Print updated value
+    console.log(`Work Log successfully updated. The new values:`);
+    console.table([
+        {
+            Start: updatedLog.start.toLocaleString(),
+            End: updatedLog.end ? updatedLog.end.toLocaleString() : "-",
+            Description: updatedLog.description ?? "-",
+        },
+    ]);
 }
