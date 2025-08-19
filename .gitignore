@@ -1,2 +1,11 @@
 node_modules
 dist
+/src/generated/prisma
+
+/src/generated/prisma
+
+.env
+
+generated
+
+dev.db

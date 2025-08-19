@@ -8,7 +8,8 @@
         "build": "tsc",
         "format:check": "prettier --check .",
         "format:write": "prettier --write .",
-        "lint": "npx eslint ."
+        "lint": "npx eslint .",
+        "db:studio": "npx prisma studio"
     },
     "keywords": [],
     "author": "",
@@ -26,7 +27,9 @@
         "typescript-eslint": "^8.39.1"
     },
     "dependencies": {
+        "@prisma/client": "^6.14.0",
         "@stricli/core": "^1.2.0",
-        "@types/node": "^24.3.0"
+        "@types/node": "^24.3.0",
+        "prisma": "^6.14.0"
     }
 }
