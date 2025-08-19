@@ -1,6 +1,6 @@
 import { buildCommand, type CommandContext } from "@stricli/core";
-import inquirer from "inquirer";
 import { TaskService } from "../services/taskService.js";
+import { getTaskStartingWithStringHelper } from "./helpers/getTaskStartingWithStringHelper.js";
 
 const taskService = new TaskService();
 
@@ -13,20 +13,7 @@ export const startWorkCommand = buildCommand({
 });
 
 async function startWork(this: CommandContext, _: {}) {
-    const task = await inquirer.prompt<{ task: string }>([
-        {
-            type: "autocomplete",
-            name: "task",
-            message: "Pick a task:",
-            source: async (answersSoFar: string[], input: string) => {
-                const tasks = await taskService.getAllTasksStartingWith(
-                    input ?? "",
-                );
-
-                return tasks.map((task) => task.name);
-            },
-        },
-    ]);
+    const task = await getTaskStartingWithStringHelper(taskService);
 
     const selectedTask = task.task;
 
