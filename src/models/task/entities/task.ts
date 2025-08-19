@@ -1,11 +1,15 @@
-import type { WorkLog } from "./workLog.js";
+import type { WorkLogBase, WorkLogEntityComplex } from "./workLog.js";
 
 export type TaskEntity = {
     id: TaskId;
     name: string;
     description?: string;
-    workLogs: WorkLog[];
+    workLogs: WorkLogBase[];
     notes: string[];
+};
+
+export type TaskEntityWithComplexWorkLogs = TaskEntity & {
+    workLogs: WorkLogEntityComplex[];
 };
 
 export type TaskSimpleEntity = {

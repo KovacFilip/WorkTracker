@@ -1,19 +1,15 @@
 import { buildApplication, buildRouteMap, run } from "@stricli/core";
 import inquirer from "inquirer";
 import inquirerPrompt from "inquirer-autocomplete-prompt";
-import { addCompleteWorkLogCommand } from "./cli/addCompleteWorkLog.js";
-import { createTaskCommand } from "./cli/createTask.js";
-import { startWorkCommand } from "./cli/startWork.js";
-import { stopWorkCommand } from "./cli/stopWork.js";
+import { logCommand } from "./cli/log.js";
+import { taskCommand } from "./cli/task.js";
 
 inquirer.registerPrompt("autocomplete", inquirerPrompt);
 
 const root = buildRouteMap({
     routes: {
-        start: startWorkCommand,
-        stop: stopWorkCommand,
-        create: createTaskCommand,
-        log: addCompleteWorkLogCommand,
+        task: taskCommand,
+        log: logCommand,
     },
     docs: {
         brief: "All available commands",

@@ -9,8 +9,8 @@ export const mapToEntity = (
         name: task.name,
         description: task.description ?? undefined,
         workLogs: task.workLogs.map((wl) => ({
-            start: wl.start.toISOString(),
-            end: wl.end ? wl.end.toISOString() : undefined,
+            start: wl.start,
+            end: wl.end ? wl.end : undefined,
             description: wl.description ?? undefined,
         })),
         notes: task.notes.map((n) => n.text),
