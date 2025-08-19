@@ -52,6 +52,29 @@ export class TaskRepository implements ITaskRepository {
         });
     }
 
+    async getAllTasksWithActiveWork(
+        partialName: string,
+    ): Promise<TaskSimpleEntity[]> {
+        const workLogs = await prisma.workLog.findMany({
+            where: {
+                end: null,
+                task: {
+                    name: {
+                        startsWith: partialName,
+                    },
+                },
+            },
+            include: { task: true },
+        });
+
+        return workLogs.map((workLog) => {
+            return {
+                id: workLog.task.id,
+                name: workLog.task.name,
+            };
+        });
+    }
+
     async describeTask(
         taskIdentifier: TaskUniqueIdentifier,
         description: string,
@@ -97,7 +120,14 @@ export class TaskRepository implements ITaskRepository {
                 },
             });
 
-            return this.getTask(taskIdentifier);
+            const task = await tx.task.findUnique({
+                where: taskIdentifier,
+                include: { notes: true, workLogs: true },
+            });
+
+            if (!task) throw new Error(`Task not found`);
+
+            return mapToEntity(task);
         });
     }
 
@@ -118,7 +148,14 @@ export class TaskRepository implements ITaskRepository {
                 data: { end: new Date(), description: description },
             });
 
-            return this.getTask(taskIdentifier);
+            const task = await tx.task.findUnique({
+                where: taskIdentifier,
+                include: { notes: true, workLogs: true },
+            });
+
+            if (!task) throw new Error(`Task not found`);
+
+            return mapToEntity(task);
         });
     }
 

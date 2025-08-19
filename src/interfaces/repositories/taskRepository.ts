@@ -9,6 +9,7 @@ export interface ITaskRepository {
     createTask(createTask: CreateTaskEntity): Promise<TaskEntity>;
     getTask(taskIdentifier: TaskUniqueIdentifier): Promise<TaskEntity>;
     getAllTasksStartingWith(partialName: string): Promise<TaskSimpleEntity[]>;
+    getAllTasksWithActiveWork(partialName: string): Promise<TaskSimpleEntity[]>;
     describeTask(
         taskIdentifier: TaskUniqueIdentifier,
         description: string,

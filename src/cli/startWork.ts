@@ -1,11 +1,8 @@
 import { buildCommand, type CommandContext } from "@stricli/core";
 import inquirer from "inquirer";
-import inquirerPrompt from "inquirer-autocomplete-prompt";
 import { TaskService } from "../services/taskService.js";
 
 const taskService = new TaskService();
-
-inquirer.registerPrompt("autocomplete", inquirerPrompt);
 
 export const startWorkCommand = buildCommand({
     func: startWork,
