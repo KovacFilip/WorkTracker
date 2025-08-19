@@ -4,27 +4,39 @@ import type {
     TaskEntity,
     TaskId,
 } from "../models/task/entities/task.js";
+import { TaskRepository } from "../repositories/TaskRepository.js";
+
+const taskRepository = new TaskRepository();
 
 export class TaskService implements ITaskService {
-    addTask(createTaskEntity: CreateTaskEntity): TaskEntity {
-        throw new Error("Method not implemented.");
+    async addTask(createTaskEntity: CreateTaskEntity): Promise<TaskEntity> {
+        return await taskRepository.createTask(createTaskEntity);
     }
-    getTask(taskId: TaskId): TaskEntity {
-        throw new Error("Method not implemented.");
+
+    async getTask(taskId: TaskId): Promise<TaskEntity> {
+        return await taskRepository.getTask(taskId);
     }
-    getTaskByName(taskName: string): TaskEntity {
-        throw new Error("Method not implemented.");
+
+    async getTaskByName(taskName: string): Promise<TaskEntity> {
+        return await taskRepository.getTaskByName(taskName);
     }
-    describeTask(taskId: TaskId): TaskEntity {
-        throw new Error("Method not implemented.");
+
+    async describeTask(
+        taskId: TaskId,
+        description: string,
+    ): Promise<TaskEntity> {
+        return await taskRepository.describeTask(taskId, description);
     }
-    startWork(taskId: TaskId): boolean {
-        throw new Error("Method not implemented.");
+
+    async startWork(taskId: TaskId): Promise<TaskEntity> {
+        return await taskRepository.startWorkOnTask(taskId);
     }
-    stopWork(taskId: TaskId): TaskEntity {
-        throw new Error("Method not implemented.");
+
+    async stopWork(taskId: TaskId, description?: string): Promise<TaskEntity> {
+        return await taskRepository.stopWorkOnTask(taskId, description);
     }
-    addNoteToTask(taskId: TaskId): TaskEntity {
-        throw new Error("Method not implemented.");
+
+    async addNoteToTask(taskId: TaskId, note: string): Promise<TaskEntity> {
+        return await taskRepository.addNoteOnTask(taskId, note);
     }
 }

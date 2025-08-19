@@ -42,24 +42,63 @@ export class TaskRepository implements ITaskRepository {
         return mapToEntity(task);
     }
 
-    async describeTask(taskId: TaskId): Promise<TaskEntity> {
-        // For now, just fetch and return — description is a property of Task
-        return this.getTask(taskId);
+    async describeTask(
+        taskId: TaskId,
+        description: string,
+    ): Promise<TaskEntity> {
+        return await prisma.$transaction(async (tx) => {
+            const task = await tx.task.findFirst({
+                where: {
+                    id: taskId,
+                },
+            });
+
+            if (!task) throw new Error(`Task with id "${taskId}" not found`);
+
+            const updatedTask = await tx.task.update({
+                where: {
+                    id: taskId,
+                },
+                data: {
+                    description: description,
+                },
+                include: { workLogs: true, notes: true },
+            });
+
+            return mapToEntity(updatedTask);
+        });
     }
 
     async startWorkOnTask(taskId: TaskId): Promise<TaskEntity> {
-        await prisma.workLog.create({
-            data: {
-                start: new Date(),
-                task: { connect: { id: taskId } },
-            },
-        });
+        return await prisma.$transaction(async (tx) => {
+            // First check, if there is any active workLog on the task
+            const activeLog = await tx.workLog.findFirst({
+                where: {
+                    taskId,
+                    end: null,
+                },
+            });
 
-        return this.getTask(taskId);
+            if (activeLog)
+                throw new Error(
+                    `There is already open worklog on task: "${taskId}"`,
+                );
+
+            await tx.workLog.create({
+                data: {
+                    start: new Date(),
+                    task: { connect: { id: taskId } },
+                },
+            });
+
+            return this.getTask(taskId);
+        });
     }
 
-    async stopWorkOnTask(taskId: TaskId): Promise<TaskEntity> {
-        // Find the latest unfinished work log
+    async stopWorkOnTask(
+        taskId: TaskId,
+        description?: string,
+    ): Promise<TaskEntity> {
         const lastLog = await prisma.workLog.findFirst({
             where: { taskId, end: null },
             orderBy: { start: "desc" },
@@ -69,7 +108,7 @@ export class TaskRepository implements ITaskRepository {
 
         await prisma.workLog.update({
             where: { id: lastLog.id },
-            data: { end: new Date() },
+            data: { end: new Date(), description: description },
         });
 
         return this.getTask(taskId);
