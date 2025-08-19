@@ -1,15 +1,25 @@
 import type {
     CreateTaskEntity,
     TaskEntity,
-    TaskId,
+    TaskSimpleEntity,
+    TaskUniqueIdentifier,
 } from "../../models/task/entities/task.js";
 
 export interface ITaskRepository {
     createTask(createTask: CreateTaskEntity): Promise<TaskEntity>;
-    getTask(taskId: TaskId): Promise<TaskEntity>;
-    getTaskByName(name: string): Promise<TaskEntity>;
-    describeTask(taskId: TaskId, description: string): Promise<TaskEntity>;
-    startWorkOnTask(taskId: TaskId): Promise<TaskEntity>;
-    stopWorkOnTask(taskId: TaskId, description?: string): Promise<TaskEntity>;
-    addNoteOnTask(taskId: TaskId, note: string): Promise<TaskEntity>;
+    getTask(taskIdentifier: TaskUniqueIdentifier): Promise<TaskEntity>;
+    getAllTasksStartingWith(partialName: string): Promise<TaskSimpleEntity[]>;
+    describeTask(
+        taskIdentifier: TaskUniqueIdentifier,
+        description: string,
+    ): Promise<TaskEntity>;
+    startWorkOnTask(taskIdentifier: TaskUniqueIdentifier): Promise<TaskEntity>;
+    stopWorkOnTask(
+        taskIdentifier: TaskUniqueIdentifier,
+        description?: string,
+    ): Promise<TaskEntity>;
+    addNoteOnTask(
+        taskIdentifier: TaskUniqueIdentifier,
+        note: string,
+    ): Promise<TaskEntity>;
 }

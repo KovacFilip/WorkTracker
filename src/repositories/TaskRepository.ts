@@ -4,7 +4,8 @@ import { mapToEntity } from "../mappers/taskModelToTaskEntity.js";
 import type {
     CreateTaskEntity,
     TaskEntity,
-    TaskId,
+    TaskSimpleEntity,
+    TaskUniqueIdentifier,
 } from "../models/task/entities/task.js";
 
 const prisma = new PrismaClient();
@@ -22,43 +23,48 @@ export class TaskRepository implements ITaskRepository {
         return mapToEntity(task);
     }
 
-    async getTask(taskId: TaskId): Promise<TaskEntity> {
+    async getTask(taskIdentifier: TaskUniqueIdentifier): Promise<TaskEntity> {
         const task = await prisma.task.findUnique({
-            where: { id: taskId },
+            where: taskIdentifier,
             include: { workLogs: true, notes: true },
         });
 
-        if (!task) throw new Error(`Task with id ${taskId} not found`);
+        if (!task) throw new Error(`Task not found`);
         return mapToEntity(task);
     }
 
-    async getTaskByName(name: string): Promise<TaskEntity> {
-        const task = await prisma.task.findUnique({
-            where: { name },
-            include: { workLogs: true, notes: true },
+    async getAllTasksStartingWith(
+        partialName: string,
+    ): Promise<TaskSimpleEntity[]> {
+        const tasks = await prisma.task.findMany({
+            where: {
+                name: {
+                    startsWith: partialName,
+                },
+            },
         });
 
-        if (!task) throw new Error(`Task with name "${name}" not found`);
-        return mapToEntity(task);
+        return tasks.map((task) => {
+            return {
+                id: task.id,
+                name: task.name,
+            };
+        });
     }
 
     async describeTask(
-        taskId: TaskId,
+        taskIdentifier: TaskUniqueIdentifier,
         description: string,
     ): Promise<TaskEntity> {
         return await prisma.$transaction(async (tx) => {
             const task = await tx.task.findFirst({
-                where: {
-                    id: taskId,
-                },
+                where: taskIdentifier,
             });
 
-            if (!task) throw new Error(`Task with id "${taskId}" not found`);
+            if (!task) throw new Error(`Task not found`);
 
             const updatedTask = await tx.task.update({
-                where: {
-                    id: taskId,
-                },
+                where: taskIdentifier,
                 data: {
                     description: description,
                 },
@@ -69,59 +75,64 @@ export class TaskRepository implements ITaskRepository {
         });
     }
 
-    async startWorkOnTask(taskId: TaskId): Promise<TaskEntity> {
+    async startWorkOnTask(
+        taskIdentifier: TaskUniqueIdentifier,
+    ): Promise<TaskEntity> {
         return await prisma.$transaction(async (tx) => {
             // First check, if there is any active workLog on the task
             const activeLog = await tx.workLog.findFirst({
                 where: {
-                    taskId,
+                    task: taskIdentifier,
                     end: null,
                 },
             });
 
             if (activeLog)
-                throw new Error(
-                    `There is already open worklog on task: "${taskId}"`,
-                );
+                throw new Error(`There is already open worklog on this task"`);
 
             await tx.workLog.create({
                 data: {
                     start: new Date(),
-                    task: { connect: { id: taskId } },
+                    task: { connect: taskIdentifier },
                 },
             });
 
-            return this.getTask(taskId);
+            return this.getTask(taskIdentifier);
         });
     }
 
     async stopWorkOnTask(
-        taskId: TaskId,
+        taskIdentifier: TaskUniqueIdentifier,
         description?: string,
     ): Promise<TaskEntity> {
-        const lastLog = await prisma.workLog.findFirst({
-            where: { taskId, end: null },
-            orderBy: { start: "desc" },
+        return await prisma.$transaction(async (tx) => {
+            const lastLog = await tx.workLog.findFirst({
+                where: { task: taskIdentifier, end: null },
+                orderBy: { start: "desc" },
+            });
+
+            if (!lastLog) throw new Error(`No active work log for the task`);
+
+            await tx.workLog.update({
+                where: { id: lastLog.id },
+                data: { end: new Date(), description: description },
+            });
+
+            return this.getTask(taskIdentifier);
         });
-
-        if (!lastLog) throw new Error(`No active work log for task ${taskId}`);
-
-        await prisma.workLog.update({
-            where: { id: lastLog.id },
-            data: { end: new Date(), description: description },
-        });
-
-        return this.getTask(taskId);
     }
 
-    async addNoteOnTask(taskId: TaskId, note: string): Promise<TaskEntity> {
+    async addNoteOnTask(
+        taskIdentifier: TaskUniqueIdentifier,
+        note: string,
+    ): Promise<TaskEntity> {
         await prisma.note.create({
             data: {
                 text: note,
-                task: { connect: { id: taskId } },
+                task: { connect: taskIdentifier },
             },
         });
 
-        return this.getTask(taskId);
+        return this.getTask(taskIdentifier);
     }
 }

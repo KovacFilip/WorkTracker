@@ -2,7 +2,8 @@ import type { ITaskService } from "../interfaces/services/taskService.js";
 import type {
     CreateTaskEntity,
     TaskEntity,
-    TaskId,
+    TaskSimpleEntity,
+    TaskUniqueIdentifier,
 } from "../models/task/entities/task.js";
 import { TaskRepository } from "../repositories/TaskRepository.js";
 
@@ -13,30 +14,38 @@ export class TaskService implements ITaskService {
         return await taskRepository.createTask(createTaskEntity);
     }
 
-    async getTask(taskId: TaskId): Promise<TaskEntity> {
-        return await taskRepository.getTask(taskId);
+    async getTask(taskIdentifier: TaskUniqueIdentifier): Promise<TaskEntity> {
+        return await taskRepository.getTask(taskIdentifier);
     }
 
-    async getTaskByName(taskName: string): Promise<TaskEntity> {
-        return await taskRepository.getTaskByName(taskName);
+    async getAllTasksStartingWith(
+        partialName: string,
+    ): Promise<TaskSimpleEntity[]> {
+        return await taskRepository.getAllTasksStartingWith(partialName);
     }
 
     async describeTask(
-        taskId: TaskId,
+        taskIdentifier: TaskUniqueIdentifier,
         description: string,
     ): Promise<TaskEntity> {
-        return await taskRepository.describeTask(taskId, description);
+        return await taskRepository.describeTask(taskIdentifier, description);
     }
 
-    async startWork(taskId: TaskId): Promise<TaskEntity> {
-        return await taskRepository.startWorkOnTask(taskId);
+    async startWork(taskIdentifier: TaskUniqueIdentifier): Promise<TaskEntity> {
+        return await taskRepository.startWorkOnTask(taskIdentifier);
     }
 
-    async stopWork(taskId: TaskId, description?: string): Promise<TaskEntity> {
-        return await taskRepository.stopWorkOnTask(taskId, description);
+    async stopWork(
+        taskIdentifier: TaskUniqueIdentifier,
+        description?: string,
+    ): Promise<TaskEntity> {
+        return await taskRepository.stopWorkOnTask(taskIdentifier, description);
     }
 
-    async addNoteToTask(taskId: TaskId, note: string): Promise<TaskEntity> {
-        return await taskRepository.addNoteOnTask(taskId, note);
+    async addNoteToTask(
+        taskIdentifier: TaskUniqueIdentifier,
+        note: string,
+    ): Promise<TaskEntity> {
+        return await taskRepository.addNoteOnTask(taskIdentifier, note);
     }
 }

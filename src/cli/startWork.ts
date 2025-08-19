@@ -1,22 +1,39 @@
 import { buildCommand, type CommandContext } from "@stricli/core";
+import inquirer from "inquirer";
+import inquirerPrompt from "inquirer-autocomplete-prompt";
+import { TaskService } from "../services/taskService.js";
+
+const taskService = new TaskService();
+
+inquirer.registerPrompt("autocomplete", inquirerPrompt);
 
 export const startWorkCommand = buildCommand({
-    func(this: CommandContext, _: {}, id: string) {
-        this.process.stdout.write(`Starting working on work with id: ${id}`);
-    },
-    parameters: {
-        positional: {
-            kind: "tuple",
-            parameters: [
-                {
-                    brief: "Id of the task",
-                    parse: String,
-                    placeholder: "task id",
-                },
-            ],
-        },
-    },
+    func: startWork,
+    parameters: {},
     docs: {
-        brief: "Command for starting work",
+        brief: "Command for starting work on a task",
     },
 });
+
+async function startWork(this: CommandContext, _: {}) {
+    const task = await inquirer.prompt<{ task: string }>([
+        {
+            type: "autocomplete",
+            name: "task",
+            message: "Pick a task:",
+            source: async (answersSoFar: string[], input: string) => {
+                const tasks = await taskService.getAllTasksStartingWith(
+                    input ?? "",
+                );
+
+                return tasks.map((task) => task.name);
+            },
+        },
+    ]);
+
+    const selectedTask = task.task;
+
+    const startWorkTask = await taskService.startWork({ name: selectedTask });
+
+    console.log("Starting work on task: ", startWorkTask);
+}

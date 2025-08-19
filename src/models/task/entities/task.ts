@@ -8,6 +8,13 @@ export type TaskEntity = {
     notes: string[];
 };
 
+export type TaskSimpleEntity = {
+    id: TaskId;
+    name: string;
+};
+
+export type TaskUniqueIdentifier = { name: string } | { id: TaskId };
+
 export type CreateTaskEntity = {
     name: string;
     description?: string;
