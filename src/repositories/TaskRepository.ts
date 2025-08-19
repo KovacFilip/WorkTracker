@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "../infrastructure/prisma.js";
 import type { ITaskRepository } from "../interfaces/repositories/taskRepository.js";
 import { mapToEntity } from "../mappers/taskModelToTaskEntity.js";
 import type {
@@ -10,7 +10,8 @@ import type {
     UpdateTaskEntity,
 } from "../models/task/entities/task.js";
 
-const prisma = new PrismaClient();
+// This should be used in DEV mode
+// const prisma = new PrismaClient();
 
 export class TaskRepository implements ITaskRepository {
     async createTask(createTask: CreateTaskEntity): Promise<TaskEntity> {

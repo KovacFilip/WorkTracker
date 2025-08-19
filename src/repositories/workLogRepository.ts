@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "../infrastructure/prisma.js";
 import type { IWorkLogRepository } from "../interfaces/repositories/workLogRepository.js";
 import { mapTaskToComplexTaskEntity } from "../mappers/taskModelToTaskEntity.js";
 import {
@@ -17,7 +17,8 @@ import type {
     WorkLogId,
 } from "../models/task/entities/workLog.js";
 
-const prisma = new PrismaClient();
+// This should be used in DEV mode
+// const prisma = new PrismaClient();
 
 export class WorkLogRepository implements IWorkLogRepository {
     async createWorkLog(
