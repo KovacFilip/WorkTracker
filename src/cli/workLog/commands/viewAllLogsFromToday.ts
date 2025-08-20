@@ -1,5 +1,6 @@
 import chalk from "chalk";
 import type { IWorkLogService } from "../../../interfaces/services/workLogService.js";
+import { getTimeInReadableFormat } from "../../helpers/getTimeInReadableFormat.js";
 
 export async function viewAllLogsFromToday(workLogService: IWorkLogService) {
     const tasks = await workLogService.getWorkLogsForDate(new Date());
@@ -9,10 +10,10 @@ export async function viewAllLogsFromToday(workLogService: IWorkLogService) {
         Start: string;
         End?: string;
         WorkDescription?: string;
-        Hours?: number;
+        Time?: string;
     }[] = [];
 
-    let totalHours = 0;
+    let totalMinutes = 0;
 
     tasks.map((task) => {
         task.workLogs.map((log) => {
@@ -21,13 +22,17 @@ export async function viewAllLogsFromToday(workLogService: IWorkLogService) {
                 Start: log.start.toLocaleString(),
                 End: log.end ? log.end.toLocaleString() : "-",
                 WorkDescription: log.description ? log.description : "-",
-                Hours: log.hours ? log.hours : 0,
+                Time: log.minutes ? getTimeInReadableFormat(log.minutes) : "-",
             });
 
-            totalHours += log.hours ? log.hours : 0;
+            totalMinutes += log.minutes ? log.minutes : 0;
         });
     });
 
     console.table(logs);
-    console.log(chalk.bold(`Total hours today: ${chalk.green(totalHours)}`));
+    console.log(
+        chalk.bold(
+            `Total working time today: ${chalk.green(getTimeInReadableFormat(totalMinutes))}`,
+        ),
+    );
 }

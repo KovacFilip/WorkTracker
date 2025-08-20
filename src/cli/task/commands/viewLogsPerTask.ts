@@ -1,6 +1,7 @@
 import type { ITaskService } from "../../../interfaces/services/taskService.js";
 import type { IWorkLogService } from "../../../interfaces/services/workLogService.js";
 import { getTaskStartingWithStringHelper } from "../../helpers/getTaskStartingWithStringHelper.js";
+import { getTimeInReadableFormat } from "../../helpers/getTimeInReadableFormat.js";
 
 export async function viewLogsPerTask(
     taskService: ITaskService,
@@ -20,7 +21,7 @@ export async function viewLogsPerTask(
             Start: log.start.toLocaleString(),
             End: log.end ? log.end.toLocaleString() : "-",
             Description: log.description ?? "-",
-            Hours: log.hours ?? "-",
+            Time: log.minutes ? getTimeInReadableFormat(log.minutes) : "-",
         })),
     );
 }

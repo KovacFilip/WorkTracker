@@ -17,7 +17,7 @@ export type CreateWorkLog = {
 export type UpdateWorkLog = Partial<WorkLogBase>;
 
 export type WorkLogEntityComplex = WorkLogEntity & {
-    hours?: number;
+    minutes?: number;
 };
 
 export type WorkLogId = string;

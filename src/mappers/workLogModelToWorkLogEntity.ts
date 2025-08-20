@@ -18,19 +18,15 @@ export const mapToComplexEntity = (workLog: WorkLog): WorkLogEntityComplex => {
 
     return {
         ...basicWorkLog,
-        hours: workLog.end
-            ? calculateHours(workLog.start, workLog.end)
+        minutes: workLog.end
+            ? calculateMinutes(workLog.start, workLog.end)
             : undefined,
     };
 };
 
-function calculateHours(start: Date, end: Date): number {
+function calculateMinutes(start: Date, end: Date): number {
     const diffMs = end.getTime() - start.getTime();
     if (diffMs <= 0) return 0;
 
-    const diffMinutes = diffMs / (1000 * 60);
-
-    // round to nearest 15 minutes (quarter hour)
-    const quarters = Math.ceil(diffMinutes / 15);
-    return quarters * 0.25; // each quarter is 0.25h
+    return Math.floor(diffMs / (1000 * 60));
 }
