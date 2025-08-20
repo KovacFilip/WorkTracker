@@ -1,4 +1,5 @@
-import { confirm, input } from "@inquirer/prompts";
+import { confirm } from "@inquirer/prompts";
+import { getDateInput } from "./getDateInput.js";
 
 export const getOptionalDateValue = async (
     property: string,
@@ -8,14 +9,7 @@ export const getOptionalDateValue = async (
         default: true,
     });
 
-    if (addQuestion) {
-        const value = await input({
-            message: "New date (YYYY-MM-DD HH:mm): ",
-            validate: (input) => !isNaN(Date.parse(input)) || "Invalid date",
-        });
-
-        return value;
-    }
+    if (addQuestion) return getDateInput("New date");
 
     return undefined;
 };

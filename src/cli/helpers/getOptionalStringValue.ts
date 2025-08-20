@@ -13,7 +13,7 @@ export const getOptionalStringValue = async (
 
     if (addQuestion) {
         value = await input({
-            message: "New value: ",
+            message: `New ${property} value`,
             default: currentValue,
         });
     }

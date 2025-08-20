@@ -12,8 +12,8 @@ export async function addCompleteWorkLog(
 
     const selectedTask = task.task;
 
-    const startTime = new Date(await getDateInput("Start time "));
-    const endTime = new Date(await getDateInput("End time "));
+    const startTime = new Date(await getDateInput("Start time"));
+    const endTime = new Date(await getDateInput("End time"));
 
     const desription = await getOptionalStringValue("Description");
 

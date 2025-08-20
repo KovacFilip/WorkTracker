@@ -4,7 +4,7 @@ import { getOptionalStringValue } from "../../helpers/getOptionalStringValue.js"
 
 export async function createTask(taskService: ITaskService) {
     const taskName = await input({
-        message: "Task name: ",
+        message: "Task name",
     });
 
     const description = await getOptionalStringValue("Description");

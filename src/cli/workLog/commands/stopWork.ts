@@ -7,7 +7,7 @@ export async function stopWork(taskService: ITaskService) {
         {
             type: "autocomplete",
             name: "task",
-            message: "Pick a task to stop work on:",
+            message: "Pick a task to stop work on",
             source: async (answersSoFar: string[], input: string) => {
                 const tasks = await taskService.getAllTasksWithActiveWork(
                     input ?? "",

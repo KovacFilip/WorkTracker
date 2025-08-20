@@ -16,7 +16,7 @@ export async function editLog(
     // Select log on the selected task
     const taskLogs = await workLogService.getWorkLogsForTask({ name: task });
     const selectedLog = await select({
-        message: "Select the log you want to update:",
+        message: "Select the log you want to update",
         choices: taskLogs.map((log) => ({
             name: `${log.id}: ${log.start.toLocaleString()} - ${log.end ? log.end.toLocaleString() : "-"}, ${log.description ?? "-"}`,
             value: log,

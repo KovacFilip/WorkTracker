@@ -8,7 +8,7 @@ export const getTaskStartingWithStringHelper = async (
         {
             type: "autocomplete",
             name: "task",
-            message: "Pick a task:",
+            message: "Pick a task",
             source: async (answersSoFar: string[], input: string) => {
                 const tasks = await taskService.getAllTasksStartingWith(
                     input ?? "",
