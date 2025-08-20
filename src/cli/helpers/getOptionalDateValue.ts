@@ -1,5 +1,5 @@
 import { confirm } from "@inquirer/prompts";
-import { getDateInput } from "./getDateInput.js";
+import { getDateTimeInput } from "./getDateInput.js";
 
 export const getOptionalDateValue = async (
     property: string,
@@ -9,7 +9,7 @@ export const getOptionalDateValue = async (
         default: true,
     });
 
-    if (addQuestion) return getDateInput("New date");
+    if (addQuestion) return getDateTimeInput("New date");
 
     return undefined;
 };
