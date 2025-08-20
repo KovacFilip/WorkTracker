@@ -5,7 +5,7 @@
     "main": "dist/index.js",
     "type": "module",
     "bin": {
-        "worktracker": "./dist/cli.js"
+        "work": "./dist/cli.js"
     },
     "scripts": {
         "build": "tsc",
@@ -13,17 +13,14 @@
         "format:write": "prettier --write .",
         "lint": "npx eslint .",
         "db:studio": "npx prisma studio",
-        "postbuild": "chmod +x dist/cli.js",
-        "prisma:generate": "prisma generate",
-        "migrate:dev": "prisma migrate dev",
-        "migrate:deploy": "prisma migrate deploy",
-        "db:push": "prisma db push",
-        "release": "pnpm build && pnpm link --global && pnpm migrate:deploy"
+        "db:prep:dev": "prisma generate && prisma migrate dev",
+        "db:prep:prod": "prisma generate && prisma migrate deploy",
+        "deploy:prod": "pnpm install && pnpm db:prep:prod && pnpm build && pnpm link --global"
     },
     "keywords": [],
     "author": "",
     "license": "ISC",
-    "packageManager": "pnpm@8.15.6+sha512.77b89e9be77a2b06ad8f403a19cae5e22976f61023f98ad323d5c30194958ebc02ee0a6ae5d13ee454f6134e4e8caf29a05f0b1a0e1d2b17bca6b6a1f1159f86",
+    "packageManager": "pnpm@10.15.0",
     "devDependencies": {
         "@eslint/js": "^9.33.0",
         "eslint": "^9.33.0",

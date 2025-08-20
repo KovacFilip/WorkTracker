@@ -10,9 +10,6 @@ import type {
     UpdateTaskEntity,
 } from "../models/task/entities/task.js";
 
-// This should be used in DEV mode
-// const prisma = new PrismaClient();
-
 export class TaskRepository implements ITaskRepository {
     async createTask(createTask: CreateTaskEntity): Promise<TaskEntity> {
         const task = await prisma.task.create({

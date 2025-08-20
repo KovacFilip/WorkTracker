@@ -17,9 +17,6 @@ import type {
     WorkLogId,
 } from "../models/task/entities/workLog.js";
 
-// This should be used in DEV mode
-// const prisma = new PrismaClient();
-
 export class WorkLogRepository implements IWorkLogRepository {
     async createWorkLog(
         taskIdentifier: TaskUniqueIdentifier,
