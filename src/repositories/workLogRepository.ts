@@ -111,6 +111,9 @@ export class WorkLogRepository implements IWorkLogRepository {
                 },
                 notes: true,
             },
+            orderBy: {
+                name: "asc",
+            },
         });
 
         return tasks.map(mapTaskToComplexTaskEntity);
