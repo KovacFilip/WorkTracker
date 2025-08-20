@@ -1,13 +1,13 @@
 import { input } from "@inquirer/prompts";
 import type { ITaskService } from "../../../interfaces/services/taskService.js";
-import { optionallyAddDescription } from "../../helpers/optionallyAddDescription.js";
+import { getOptionalStringValue } from "../../helpers/getOptionalStringValue.js";
 
 export async function createTask(taskService: ITaskService) {
     const taskName = await input({
         message: "Task name: ",
     });
 
-    const description = await optionallyAddDescription();
+    const description = await getOptionalStringValue("Description");
 
     const newTask = await taskService.addTask({
         name: taskName,

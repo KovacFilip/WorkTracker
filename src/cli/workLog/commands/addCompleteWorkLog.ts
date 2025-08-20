@@ -1,8 +1,8 @@
 import type { ITaskService } from "../../../interfaces/services/taskService.js";
 import type { IWorkLogService } from "../../../interfaces/services/workLogService.js";
 import { getDateInput } from "../../helpers/getDateInput.js";
+import { getOptionalStringValue } from "../../helpers/getOptionalStringValue.js";
 import { getTaskStartingWithStringHelper } from "../../helpers/getTaskStartingWithStringHelper.js";
-import { optionallyAddDescription } from "../../helpers/optionallyAddDescription.js";
 
 export async function addCompleteWorkLog(
     taskService: ITaskService,
@@ -15,7 +15,7 @@ export async function addCompleteWorkLog(
     const startTime = new Date(await getDateInput("Start time "));
     const endTime = new Date(await getDateInput("End time "));
 
-    const desription = await optionallyAddDescription();
+    const desription = await getOptionalStringValue("Description");
 
     await workLogService.createWorkLog(
         { name: selectedTask },

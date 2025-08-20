@@ -1,6 +1,6 @@
 import inquirer from "inquirer";
 import type { ITaskService } from "../../../interfaces/services/taskService.js";
-import { optionallyAddDescription } from "../../helpers/optionallyAddDescription.js";
+import { getOptionalStringValue } from "../../helpers/getOptionalStringValue.js";
 
 export async function stopWork(taskService: ITaskService) {
     const task = await inquirer.prompt<{ task: string }>([
@@ -20,7 +20,7 @@ export async function stopWork(taskService: ITaskService) {
 
     const selectedTask = task.task;
 
-    const description = await optionallyAddDescription();
+    const description = await getOptionalStringValue("Description");
 
     await taskService.stopWork({ name: selectedTask }, description);
 
