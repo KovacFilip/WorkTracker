@@ -1,11 +1,62 @@
 # WorkTracker
 
-## Description
+## Overview
 
-- App for tracking time spent on tasks for work
-- Also for storing some comments, reflection, priority, ... on the tasks
+WorkTracker is a CLI application for tracking the time you spend on work tasks.
+It helps you organize tasks, record work sessions, and review your logs directly from the command line.
 
-## CLI support
+## Getting Started
 
-- Supports adding tasks
-- Supports starting and stopping work on a task
+### Installation
+
+1. Clone the repository.
+2. Copy `.env.example` to `.env`.
+3. In the `.env` file, set the `DATABASE_URL` to the path where the SQLite database should be stored.
+4. Run:
+
+   ```sh
+   pnpm deploy:prod
+   ```
+
+   This will:
+
+   * Install dependencies
+   * Prepare the database at the specified `DATABASE_URL`
+   * Build the application
+   * Link it globally so you can run the `work` command from anywhere
+
+### Usage
+
+Once installed, you can run:
+
+```sh
+work --help
+```
+
+to see available commands.
+
+## Commands
+
+### `work task`
+
+Manage tasks. Running this command will present you with interactive options.
+
+Available actions:
+
+1. Create a new task
+2. Edit an existing task
+3. Delete a task
+4. View all tasks
+5. View all work logs for a specific task
+
+### `work log`
+
+Manage work logs. Running this command will present you with interactive options.
+
+Available actions:
+
+1. Start working on a task
+2. Finish work on a task
+3. Add a complete work log manually
+4. Edit an existing work log
+5. View all logs for today
