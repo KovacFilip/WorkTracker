@@ -21,7 +21,10 @@ export interface ITaskService {
         description: string,
     ): Promise<TaskEntity>;
     startWork(taskIdentifier: TaskUniqueIdentifier): Promise<TaskEntity>;
-    stopWork(taskIdentifier: TaskUniqueIdentifier): Promise<TaskEntity>;
+    stopWork(
+        taskIdentifier: TaskUniqueIdentifier,
+        description?: string,
+    ): Promise<TaskEntity>;
     addNoteToTask(
         taskIdentifier: TaskUniqueIdentifier,
         note: string,

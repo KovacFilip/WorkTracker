@@ -1,8 +1,8 @@
 import { buildApplication, buildRouteMap, run } from "@stricli/core";
 import inquirer from "inquirer";
 import inquirerPrompt from "inquirer-autocomplete-prompt";
-import { logCommand } from "./cli/log.js";
 import { taskCommand } from "./cli/task/index.js";
+import { logCommand } from "./cli/workLog/index.js";
 
 inquirer.registerPrompt("autocomplete", inquirerPrompt);
 
