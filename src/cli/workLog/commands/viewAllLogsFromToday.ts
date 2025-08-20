@@ -1,3 +1,4 @@
+import { confirm } from "@inquirer/prompts";
 import chalk from "chalk";
 import type { IWorkLogService } from "../../../interfaces/services/workLogService.js";
 import { getTimeInReadableFormat } from "../../helpers/getTimeInReadableFormat.js";
@@ -7,8 +8,8 @@ export async function viewAllLogsFromToday(workLogService: IWorkLogService) {
 
     const logs: {
         Task: string;
-        Start: string;
-        End?: string;
+        Start: Date;
+        End?: Date;
         WorkDescription?: string;
         Time?: string;
     }[] = [];
@@ -19,8 +20,8 @@ export async function viewAllLogsFromToday(workLogService: IWorkLogService) {
         task.workLogs.map((log) => {
             logs.push({
                 Task: task.name,
-                Start: log.start.toLocaleString(),
-                End: log.end ? log.end.toLocaleString() : "-",
+                Start: log.start,
+                End: log.end,
                 WorkDescription: log.description ? log.description : "-",
                 Time: log.minutes ? getTimeInReadableFormat(log.minutes) : "-",
             });
@@ -29,7 +30,24 @@ export async function viewAllLogsFromToday(workLogService: IWorkLogService) {
         });
     });
 
-    console.table(logs);
+    const orderByStartDate = await confirm({
+        message: "Do you wish to sort logs by start date?",
+    });
+
+    if (orderByStartDate) {
+        logs.sort((a, b) => a.Start.getTime() - b.Start.getTime());
+    }
+
+    console.table(
+        logs.map((log) => {
+            return {
+                ...log,
+                Start: log.Start.toLocaleString(),
+                End: log.End?.toLocaleString(),
+            };
+        }),
+    );
+
     console.log(
         chalk.bold(
             `Total working time today: ${chalk.green(getTimeInReadableFormat(totalMinutes))}`,
