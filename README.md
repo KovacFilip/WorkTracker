@@ -59,7 +59,6 @@ Available actions:
 2. Finish work on a task
 3. Add a complete work log manually
 4. Edit an existing work log
-5. View all logs for today
 
 ### `report`
 
@@ -67,4 +66,6 @@ Get reports. Running this command will present you with interactive options.
 
 Available actions:
 
-1. Daily - generate a report from last working day
+1. Daily Meeting report - generate a report from last working day
+2. Today's report - generate a report from the current working day
+3. Choose a day - generate a report from the day specified

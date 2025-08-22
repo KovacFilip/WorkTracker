@@ -1,5 +1,5 @@
-import { confirm } from "@inquirer/prompts";
 import chalk from "chalk";
+import CliTable3, { type HorizontalTableRow } from "cli-table3";
 import type { IWorkLogService } from "../../../interfaces/services/workLogService.js";
 import { getTimeInReadableFormat } from "../../helpers/getTimeInReadableFormat.js";
 
@@ -9,48 +9,48 @@ export async function viewAllLogsFromSpecificDayHelper(
 ) {
     const tasks = await workLogService.getWorkLogsForDate(date);
 
-    const logs: {
-        Task: string;
-        Start: Date;
-        End?: Date;
-        WorkDescription?: string;
-        Time?: string;
-    }[] = [];
+    const terminalWidth = process.stdout.columns ?? 80; // default fallback
+    const colWidths = [20, 30, terminalWidth - 20 - 30 - 8 - 10, 8];
+
+    const table = new CliTable3({
+        head: [
+            "Task name",
+            "Task description",
+            "Work description",
+            "Total time",
+        ],
+        colWidths,
+        wordWrap: true,
+    });
 
     let totalMinutes = 0;
 
-    tasks.map((task) => {
-        task.workLogs.map((log) => {
-            logs.push({
-                Task: task.name,
-                Start: log.start,
-                End: log.end,
-                WorkDescription: log.description ? log.description : "-",
-                Time: log.minutes ? getTimeInReadableFormat(log.minutes) : "-",
-            });
+    tasks.forEach((task) => {
+        const workLogsFormatted = task.workLogs
+            .map(
+                (wl, i) =>
+                    `• ${wl.description ?? "No description"} (${getTimeInReadableFormat(wl.minutes ?? 0)})`,
+            )
+            .join("\n"); // each log on a new line
 
-            totalMinutes += log.minutes ? log.minutes : 0;
-        });
+        const tableRow: HorizontalTableRow = [
+            task.name,
+            task.description,
+            workLogsFormatted,
+            getTimeInReadableFormat(
+                task.workLogs.reduce(
+                    (prev, current) => prev + (current.minutes ?? 0),
+                    0,
+                ),
+            ),
+        ];
+
+        task.workLogs.forEach((wl) => (totalMinutes += wl.minutes ?? 0));
+
+        table.push(tableRow);
     });
 
-    const orderByStartDate = await confirm({
-        message: "Do you wish to sort logs by start date?",
-    });
-
-    if (orderByStartDate) {
-        logs.sort((a, b) => a.Start.getTime() - b.Start.getTime());
-    }
-
-    console.table(
-        logs.map((log) => {
-            return {
-                ...log,
-                Start: log.Start.toLocaleString(),
-                End: log.End?.toLocaleString(),
-            };
-        }),
-    );
-
+    console.log(table.toString());
     console.log(
         chalk.bold(
             `Total working time on ${date.toDateString()}: ${chalk.green(getTimeInReadableFormat(totalMinutes))}`,

@@ -6,15 +6,11 @@ import { addCompleteWorkLog } from "./commands/addCompleteWorkLog.js";
 import { editLog } from "./commands/editLog.js";
 import { startWork } from "./commands/startWork.js";
 import { stopWork } from "./commands/stopWork.js";
-import { viewAllLogsFromSpecificDay } from "./commands/viewAllLogsFromSpecificDay.js";
-import { viewAllLogsFromToday } from "./commands/viewAllLogsFromToday.js";
 
 const START_WORK = "Start working on a task";
 const STOP_WORK = "Stop working on a task";
 const ADD_COMPLETE_WORK_LOG = "Add a work log to a task";
 const EDIT_LOG = "Edit a work log";
-const VIEW_ALL_LOGS_FROM_TODAY = "View all today's logs";
-const VIEW_ALL_LOGS_FROM_SPECIFIC_DAY = "View all logs from a specific day";
 
 const taskService = new TaskService();
 const workLogService = new WorkLogService();
@@ -29,14 +25,7 @@ export const logCommand = buildCommand({
 
 async function logCommands() {
     const selectedCommand = await select({
-        choices: [
-            START_WORK,
-            STOP_WORK,
-            ADD_COMPLETE_WORK_LOG,
-            EDIT_LOG,
-            VIEW_ALL_LOGS_FROM_TODAY,
-            VIEW_ALL_LOGS_FROM_SPECIFIC_DAY,
-        ],
+        choices: [START_WORK, STOP_WORK, ADD_COMPLETE_WORK_LOG, EDIT_LOG],
         message: "Select the operation",
     });
 
@@ -50,14 +39,8 @@ async function logCommands() {
         case ADD_COMPLETE_WORK_LOG:
             addCompleteWorkLog(taskService, workLogService);
             break;
-        case VIEW_ALL_LOGS_FROM_TODAY:
-            viewAllLogsFromToday(workLogService);
-            break;
         case EDIT_LOG:
             editLog(taskService, workLogService);
-            break;
-        case VIEW_ALL_LOGS_FROM_SPECIFIC_DAY:
-            viewAllLogsFromSpecificDay(workLogService);
             break;
         default:
             break;
