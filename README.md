@@ -60,3 +60,11 @@ Available actions:
 3. Add a complete work log manually
 4. Edit an existing work log
 5. View all logs for today
+
+### `report`
+
+Get reports. Running this command will present you with interactive options.
+
+Available actions:
+
+1. Daily - generate a report from last working day
