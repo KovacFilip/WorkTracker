@@ -96,7 +96,16 @@ export class WorkLogRepository implements IWorkLogRepository {
         endOfDay.setHours(23, 59, 59, 999);
 
         const tasks = await prisma.task.findMany({
-            where: {},
+            where: {
+                workLogs: {
+                    some: {
+                        start: {
+                            gte: startOfDay,
+                            lte: endOfDay,
+                        },
+                    },
+                },
+            },
             include: {
                 workLogs: {
                     where: {
