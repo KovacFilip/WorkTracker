@@ -14,7 +14,7 @@ export interface ITaskRepository {
         editTaskData: UpdateTaskEntity,
     ): Promise<TaskSimpleEntityWithDescription>;
     getTask(taskIdentifier: TaskUniqueIdentifier): Promise<TaskEntity>;
-    getAllTasksStartingWith(partialName: string): Promise<TaskSimpleEntity[]>;
+    getAllTasksContaining(partialName: string): Promise<TaskSimpleEntity[]>;
     getAllTasksWithActiveWork(partialName: string): Promise<TaskSimpleEntity[]>;
     describeTask(
         taskIdentifier: TaskUniqueIdentifier,

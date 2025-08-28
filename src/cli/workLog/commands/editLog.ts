@@ -4,14 +4,14 @@ import type { IWorkLogService } from "../../../interfaces/services/workLogServic
 import type { UpdateWorkLog } from "../../../models/task/entities/workLog.js";
 import { getOptionalDateValue } from "../../helpers/getOptionalDateValue.js";
 import { getOptionalStringValue } from "../../helpers/getOptionalStringValue.js";
-import { getTaskStartingWithStringHelper } from "../../helpers/getTaskStartingWithStringHelper.js";
+import { getTasksContainingStringHelper } from "../../helpers/getTaskStartingWithStringHelper.js";
 
 export async function editLog(
     taskService: ITaskService,
     workLogService: IWorkLogService,
 ) {
     // First get task
-    const task = (await getTaskStartingWithStringHelper(taskService)).task;
+    const task = (await getTasksContainingStringHelper(taskService)).task;
 
     // Select log on the selected task
     const taskLogs = await workLogService.getWorkLogsForTask({ name: task });

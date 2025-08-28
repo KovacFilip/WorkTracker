@@ -1,8 +1,8 @@
 import type { ITaskService } from "../../../interfaces/services/taskService.js";
-import { getTaskStartingWithStringHelper } from "../../helpers/getTaskStartingWithStringHelper.js";
+import { getTasksContainingStringHelper } from "../../helpers/getTaskStartingWithStringHelper.js";
 
 export async function deleteTask(taskService: ITaskService) {
-    const task = (await getTaskStartingWithStringHelper(taskService)).task;
+    const task = (await getTasksContainingStringHelper(taskService)).task;
 
     await taskService.deleteTask({ name: task });
 

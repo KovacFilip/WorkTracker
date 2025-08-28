@@ -1,10 +1,10 @@
 import type { ITaskService } from "../../../interfaces/services/taskService.js";
 import type { UpdateTaskEntity } from "../../../models/task/entities/task.js";
 import { getOptionalStringValue } from "../../helpers/getOptionalStringValue.js";
-import { getTaskStartingWithStringHelper } from "../../helpers/getTaskStartingWithStringHelper.js";
+import { getTasksContainingStringHelper } from "../../helpers/getTaskStartingWithStringHelper.js";
 
 export async function editTask(taskService: ITaskService) {
-    const task = (await getTaskStartingWithStringHelper(taskService)).task;
+    const task = (await getTasksContainingStringHelper(taskService)).task;
 
     const currentTaskData = await taskService.getTask({ name: task });
 

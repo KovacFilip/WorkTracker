@@ -33,13 +33,13 @@ export class TaskRepository implements ITaskRepository {
         return mapToEntity(task);
     }
 
-    async getAllTasksStartingWith(
+    async getAllTasksContaining(
         partialName: string,
     ): Promise<TaskSimpleEntity[]> {
         const tasks = await prisma.task.findMany({
             where: {
                 name: {
-                    startsWith: partialName,
+                    contains: partialName,
                 },
             },
         });

@@ -1,8 +1,8 @@
 import type { ITaskService } from "../../../interfaces/services/taskService.js";
-import { getTaskStartingWithStringHelper } from "../../helpers/getTaskStartingWithStringHelper.js";
+import { getTasksContainingStringHelper } from "../../helpers/getTaskStartingWithStringHelper.js";
 
 export async function startWork(taskService: ITaskService) {
-    const task = await getTaskStartingWithStringHelper(taskService);
+    const task = await getTasksContainingStringHelper(taskService);
 
     const selectedTask = task.task;
 

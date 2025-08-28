@@ -20,10 +20,10 @@ export class TaskService implements ITaskService {
         return await taskRepository.getTask(taskIdentifier);
     }
 
-    async getAllTasksStartingWith(
+    async getAllTasksContaining(
         partialName: string,
     ): Promise<TaskSimpleEntity[]> {
-        return await taskRepository.getAllTasksStartingWith(partialName);
+        return await taskRepository.getAllTasksContaining(partialName);
     }
 
     async getAllTasksWithActiveWork(

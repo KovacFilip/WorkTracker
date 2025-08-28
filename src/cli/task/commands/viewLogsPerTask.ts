@@ -1,13 +1,13 @@
 import type { ITaskService } from "../../../interfaces/services/taskService.js";
 import type { IWorkLogService } from "../../../interfaces/services/workLogService.js";
-import { getTaskStartingWithStringHelper } from "../../helpers/getTaskStartingWithStringHelper.js";
+import { getTasksContainingStringHelper } from "../../helpers/getTaskStartingWithStringHelper.js";
 import { getTimeInReadableFormat } from "../../helpers/getTimeInReadableFormat.js";
 
 export async function viewLogsPerTask(
     taskService: ITaskService,
     workLogService: IWorkLogService,
 ) {
-    const task = await getTaskStartingWithStringHelper(taskService);
+    const task = await getTasksContainingStringHelper(taskService);
 
     const selectedTask = task.task;
 
